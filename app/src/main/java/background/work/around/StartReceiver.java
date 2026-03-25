@@ -14,11 +14,6 @@ public class StartReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        
-        if (intent == null) return;
-        String action = intent.getAction();
-        if (action == null) return;
-        if (!action.equals(context.getPackageName() + ".START")) return;
      
         final PendingResult pendingResult = goAsync();
 
