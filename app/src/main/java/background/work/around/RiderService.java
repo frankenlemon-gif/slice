@@ -100,8 +100,7 @@ public class RiderService extends Service {
         sendBroadcast(intent);
 	}
 	
-	private void DestroyCleaner() {
-		isRunning = false;
+	private void DestroyCleaner() {		
 		if (player != null) {
             player.stop();
             player.release();
@@ -196,6 +195,7 @@ public class RiderService extends Service {
     @Override
     public void onDestroy() {
         DestroyPanic();
+		isRunning = false;
 		DestroyCleaner();
         super.onDestroy();
     }
