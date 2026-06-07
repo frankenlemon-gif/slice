@@ -1,34 +1,43 @@
 package background.work.around;
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Build;
 import android.app.slice.Slice;
 import android.app.slice.SliceProvider;
+import android.content.Intent;
+import android.net.Uri;
 
 public class MySliceProvider extends SliceProvider {
 
     @Override
-    public boolean onCreateSliceProvider() {
+    public boolean onCreate() {
+        
         return true;
     }
-    
+
     @Override
     public Slice onBindSlice(Uri sliceUri) {
-        String path = sliceUri.getLastPathSegment();
+        if (sliceUri == null) return null;
 
-        if ("ping_0".equals(path)) {
-            return createPingSlice("Ping 0");
-        } else if ("ping_1".equals(path)) {
-            return createPingSlice("Ping 1");
-        } else if ("ping_2".equals(path)) {
-            return createPingSlice("Ping 2");
+        String path = sliceUri.getLastPathSegment();
+        
+        switch (path) {
+            case "ping_0":
+                return createPingSlice("Ping 0");
+            case "ping_1":
+                return createPingSlice("Ping 1");
+            case "ping_2":
+                return createPingSlice("Ping 2");
+            default:
+                return null;
         }
-        return null;
     }
 
     private Slice createPingSlice(String text) {
-        return new Slice.Builder(getContext(), Uri.parse("content://background.work.around.provider/" + text))
+        return new Slice.Builder(Uri.parse("content://background.work.around.provider/" + text))
                 .build();
+    }
+
+    @Override
+    public Uri onMapIntentToUri(Intent intent) {
+       return null;
     }
 }
