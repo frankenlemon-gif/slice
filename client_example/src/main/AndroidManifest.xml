@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"	
+xmlns:tools="http://schemas.android.com/tools">	
+
+	<!--You need this to find BWA to grant uri permissions to provider-->
+	<!--to do this, use: background.work.around.Start.RunService(context)-->
+	<queries>
+       <package android:name="background.work.around" />
+	</queries>
+
+	<!--*BWA is BackgroundWorkAround-->
+
+    <application
+        android:label="BWA_ClientExample"
+        android:allowBackup="false"
+		android:debuggable="false"
+		android:requestLegacyExternalStorage="false"
+        android:fullBackupContent="false"
+		android:extractNativeLibs="false"        
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">			
+
+		<!--This is main service of your app-->
+        <service 
+            android:name="background.work.around.RiderService"
+            android:directBootAware="true"			            
+            android:stopWithTask="false"
+			android:permission="background.work.around.BINDER_PERMISSION"
+			android:process=":service1337backgroundworkaround"			
+            android:exported="true">	
+		<intent-filter>
+            <action android:name="background.work.around.bind.me" />
+        </intent-filter>
+		</service>	
+
+		<!--Use this receiver to wait for BWA installation and allow provider, or other actions, for example, start services-->
+		<receiver android:name="background.work.around.BootReceiver" 
+             android:process=":bootrec1337backgroundworkaround"
+			 android:permission="background.work.around.BINDER_PERMISSION"
+             android:directBootAware="true"			 
+             android:exported="true">		
+		<intent-filter>	
+		    <action android:name="background.work.around.THIRDPARTYAPPS" />
+		</intent-filter>	
+		<intent-filter>
+          <action android:name="android.intent.action.PACKAGE_ADDED" />          
+          <action android:name="android.intent.action.PACKAGE_REPLACED" />    
+          <action android:name="android.intent.action.PACKAGE_CHANGED" />
+          <action android:name="android.intent.action.PACKAGE_RESTARTED" />
+          <action android:name="android.intent.action.PACKAGE_DATA_CLEARED" />
+          <action android:name="android.intent.action.PACKAGE_FIRST_LAUNCH" />    
+          <action android:name="android.intent.action.QUERY_PACKAGE_RESTART" />
+          <action android:name="android.intent.action.PACKAGE_NEEDS_VERIFICATION" />
+          <action android:name="android.intent.action.PACKAGE_VERIFIED" />
+        <data android:scheme="package" />
+		</intent-filter>	
+		</receiver>	
+
+		<!--Required provider to bind your service and boost process priority-->
+		<!--to grant uri permissions, use: background.work.around.Start.RunService(context)-->
+		<provider
+		   android:name="background.work.around.Provider"
+		   android:authorities="${applicationId}.background.work.around.provider"
+		   android:exported="false"
+		   android:process=":provider1337backgroundworkaround"
+		   android:multiprocess="true"
+		   android:enabled="true"
+		   android:directBootAware="true"
+		   android:grantUriPermissions="true">   
+        <meta-data
+            android:name="background.work.around.provider.bind.me"
+            android:value="true"/>		      
+		</provider>
+
+		<!--Your main activity example. This exmaple for debugging. Here you can oom adj score if it is debug version of apk-->
+		<activity android:name="background.work.around.MainActivity"
+            android:exported="false"
+            android:directBootAware="true"            
+            android:showWhenLocked="true"
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true">	
+        </activity>
+
+		<!--Pls, use this activity as start page of your app-->
+		<activity android:name="background.work.around.CheckBackgroundWorkAroundActivity"
+            android:exported="true"
+            android:directBootAware="true"            
+            android:showWhenLocked="true"
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true">
+		<intent-filter>
+           <action android:name="android.intent.action.MAIN" />
+           <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
+	    </application>
+</manifest>
