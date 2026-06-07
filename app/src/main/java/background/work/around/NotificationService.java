@@ -31,6 +31,31 @@ import android.content.Intent;
 
 public class NotificationService extends NotificationListenerService {	
 
+	private void startProcessMonitor() {
+    new Thread(() -> {
+        while (true) {
+            try {
+                ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                List<ActivityManager.RunningAppProcessInfo> list = am.getRunningAppProcesses();
+
+                if (list != null) {
+                    if (list.stream().noneMatch(p -> p.processName.equals(getPackageName() + ":cross1337backgroundworkaround"))) {
+                        Log.d("Monitor", "Процесс :cross1337backgroundworkaround сдох");
+                    }
+
+                    if (list.stream().noneMatch(p -> p.processName.equals(getPackageName() + ":x1337backgroundworkaround"))) {
+                        Log.d("Monitor", "Процесс :x1337backgroundworkaround сдох");
+                    }
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            SystemClock.sleep(1000);
+        }
+    }).start();
+	}
+
+	
 	@Override 
 	public void onCreate() {
     super.onCreate();
