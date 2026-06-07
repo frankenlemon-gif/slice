@@ -82,6 +82,7 @@ public class NotificationService extends NotificationListenerService {
                             };
 
                             Intent bindIntent = new Intent();
+							bindIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                             bindIntent.setComponent(new ComponentName(info.serviceInfo.packageName, info.serviceInfo.name));
                             
                             if (bindService(bindIntent, conn, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT | Context.BIND_ABOVE_CLIENT)) {
