@@ -1,1 +1,1 @@
-Example of the most survivable foreground service on Android witout special rights. For demonstration of work plays sound and restarts on reboot and other system events.
+This app designed to help other applications run in the background when aggressive firmwares attempts to stop them.
