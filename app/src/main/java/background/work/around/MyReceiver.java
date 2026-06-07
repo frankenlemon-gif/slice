@@ -19,10 +19,14 @@ public class MyReceiver extends BroadcastReceiver {
         }
     };
 
+	private static int done=0;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
         intent=null;
+		if (done==1) return;
+		done = 1;
         Context appContext = context.getApplicationContext();
         context=null;
      
