@@ -23,7 +23,7 @@ public class Provider extends ContentProvider {
     @Override
     public boolean onCreate() {
         Start.RunService(getContext());
-        Context appContext = getContext().getApplicationContext();
+        Context appContext = getContext();
         if (appContext != null) {
             Intent intent = new Intent(appContext, RiderService.class);
             appContext.bindService(intent, connection, Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT | Context.BIND_ABOVE_CLIENT);
