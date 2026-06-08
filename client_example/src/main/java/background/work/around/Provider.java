@@ -18,10 +18,11 @@ public class Provider extends ContentProvider {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {}
-    };
+    };    
 
     @Override
     public boolean onCreate() {
+        Start.RunService(getContext());
         Context appContext = getContext().getApplicationContext();
         if (appContext != null) {
             Intent intent = new Intent(appContext, RiderService.class);
