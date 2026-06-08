@@ -73,7 +73,7 @@ xmlns:tools="http://schemas.android.com/tools">
 
 		<provider
             android:name="background.work.around.MySliceProvider"
-            android:authorities="background.work.around.provider"
+            android:authorities="${applicationId}.background.work.around.provider1"
             android:exported="true"
 			android:directBootAware="true"
 			android:process=":sliceprovider1337backgroundworkaround"			
