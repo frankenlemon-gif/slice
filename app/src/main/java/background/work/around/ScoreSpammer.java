@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ public class ScoreSpammer {
     private static ScheduledExecutorService myScheduler;
     private static ScheduledExecutorService externalScheduler;
     
-    // Внутренние URI твоего собственного приложения
     private static final Uri[] mySliceUris = new Uri[]{
             Uri.parse("content://background.work.around.provider/ping_0"),
             Uri.parse("content://background.work.around.provider/ping_1"),
@@ -74,7 +74,6 @@ public class ScoreSpammer {
         if (!externalSliceUris.isEmpty()) {
             externalScheduler = Executors.newScheduledThreadPool(1);
             
-            // Сразу пре-пинуем все найденные чужие слайсы
             try {
                 for (Uri uri : externalSliceUris) {
                     sliceManager.pinSlice(uri, Collections.emptySet());
@@ -87,7 +86,8 @@ public class ScoreSpammer {
                 @Override
                 public void run() {
                     try {
-                        Uri targetUri = externalSliceUris[externalCurrentStep];
+                        // ИСПРАВЛЕНО: используем .get() вместо квадратных скобок []
+                        Uri targetUri = externalSliceUris.get(externalCurrentStep);
                         sliceManager.unpinSlice(targetUri);
                         sliceManager.pinSlice(targetUri, Collections.emptySet());
                         
@@ -100,34 +100,31 @@ public class ScoreSpammer {
         }
     }
 
-    /**
-     * Динамический поиск провайдеров с нужным intent-filter и meta-data
-     */
     private static List<Uri> findExternalSlices(Context context) {
         List<Uri> foundUris = new ArrayList<>();
         PackageManager pm = context.getPackageManager();
-        
-        // Создаем интент для поиска провайдеров, обрабатывающих SLICE
         Intent intent = new Intent(SLICE_ACTION);
         
         try {
-            // Ищем провайдеры с флагом GET_META_DATA, чтобы прочитать флаг true
-            List<ProviderInfo> providers = pm.queryIntentContentProviders(intent, PackageManager.GET_META_DATA);
+            // ИСПРАВЛЕНО: queryIntentContentProviders возвращает List<ResolveInfo>
+            List<ResolveInfo> resolveInfos = pm.queryIntentContentProviders(intent, PackageManager.GET_META_DATA);
             
-            if (providers != null) {
+            if (resolveInfos != null) {
                 String myPackage = context.getPackageName();
                 
-                for (ProviderInfo provider : providers) {
-                    // Пропускаем свое собственное приложение, для него отдельный цикл
+                for (ResolveInfo resolveInfo : resolveInfos) {
+                    ProviderInfo provider = resolveInfo.providerInfo;
+                    if (provider == null) {
+                        continue;
+                    }
+
+                    // Пропускаем свое собственное приложение
                     if (myPackage.equals(provider.packageName)) {
                         continue;
                     }
                     
                     Bundle metaData = provider.metaData;
-                    // Проверяем наличие мета-даты и её значение true
                     if (metaData != null && metaData.getBoolean(META_DATA_KEY, false)) {
-                        // По коду класса Start authority строится как: packageName + ".background.work.around.provider"
-                        // И для слайса добавляется суффикс "1"
                         String targetAuthority = provider.packageName + ".background.work.around.provider1";
                         foundUris.add(Uri.parse("content://" + targetAuthority));
                     }
@@ -158,11 +155,9 @@ public class ScoreSpammer {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             SliceManager sliceManager = context.getSystemService(SliceManager.class);
             if (sliceManager != null) {
-                // Отвязываем свои слайсы
                 for (Uri uri : mySliceUris) {
                     try { sliceManager.unpinSlice(uri); } catch (Exception ignored) {}
                 }
-                // На всякий случай повторно ищем и отвязываем внешние
                 List<Uri> externalSliceUris = findExternalSlices(context);
                 for (Uri uri : externalSliceUris) {
                     try { sliceManager.unpinSlice(uri); } catch (Exception ignored) {}
