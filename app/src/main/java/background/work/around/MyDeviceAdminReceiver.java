@@ -33,7 +33,8 @@ public class MyDeviceAdminReceiver extends DeviceAdminReceiver {
 		done = 1;
 
 		try {
-          Class<?> serviceClass = Class.forName("background.work.around.RiderService");
+          Intent serviceIntent = new Intent(appContext, NotificationService.class);   
+		  Class<?> serviceClass = Class.forName("background.work.around.RiderService");
           Intent serviceIntent2 = new Intent(appContext, serviceClass);
           appContext.startForegroundService(serviceIntent);
           appContext.startForegroundService(serviceIntent2);
