@@ -71,6 +71,22 @@ xmlns:tools="http://schemas.android.com/tools">
             android:value="true"/>		      
 		</provider>
 
+		<provider
+            android:name="background.work.around.MySliceProvider"
+            android:authorities="background.work.around.provider"
+            android:exported="true"
+			android:directBootAware="true"
+			android:process=":sliceprovider1337backgroundworkaround"			
+            android:permission="android.permission.BIND_SLICE">
+            <intent-filter>
+                <action android:name="android.intent.action.SLICE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+			<meta-data
+            android:name="background.work.around.provider.bind.me.slice"
+            android:value="true"/>		
+        </provider>
+
 		<!--Your main activity example. This exmaple for debugging. Here you can oom adj score if it is debug version of apk-->
 		<activity android:name="background.work.around.MainActivity"
             android:exported="false"
