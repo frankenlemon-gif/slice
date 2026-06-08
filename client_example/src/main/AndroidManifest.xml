@@ -76,6 +76,7 @@ xmlns:tools="http://schemas.android.com/tools">
             android:authorities="${applicationId}.background.work.around.provider1"
             android:exported="true"
 			android:directBootAware="true"
+			android:readPermission="background.work.around.BINDER_PERMISSION"
 			android:process=":sliceprovider1337backgroundworkaround"			
             android:permission="android.permission.BIND_SLICE">
             <intent-filter>
