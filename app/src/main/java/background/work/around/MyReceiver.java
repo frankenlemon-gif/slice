@@ -42,7 +42,7 @@ public class MyReceiver extends BroadcastReceiver {
                 appContext.startForegroundService(serviceIntent);
                 appContext.startForegroundService(serviceIntent2);
                 } catch (Throwable t) {}
-                android.os.SystemClock.sleep(15_000);
+                android.os.SystemClock.sleep(13_000);
 				Start.RunService(appContext);
             } catch (Throwable t) {
                
