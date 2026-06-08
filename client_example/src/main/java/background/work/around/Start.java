@@ -43,6 +43,12 @@ public final class Start {
                     Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION 
                 );
 
+                context.grantUriPermission(
+                    TRUSTED_PACKAGE,
+                    providerUri1,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION 
+                );
+
                 // Для слайс-провайдера выдаем только специализированные права
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     SliceManager sliceManager = context.getSystemService(SliceManager.class);
